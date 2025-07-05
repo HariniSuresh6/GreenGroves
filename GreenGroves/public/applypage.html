@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="MyApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Volunteering</title>
+    <link rel="stylesheet" href="apply.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="app1.js"></script>
+    <!--script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="firebase-config.js"></script-->
+</head>
+
+<body ng-controller="myCtrl">
+    <div class="container">
+        <header>
+            <h1>Application Form</h1>
+            <nav>
+                <ul>
+                    <li><a href="organisation page.html">Organisations</a></li>
+                    <li><a href="aboutpage.html">About</a></li>
+                    <li><a href="Volunteering.html">Volunteering</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div class="home-button">
+            <button id="home-button" ng-click="navigateTo('home.html')"></button>
+        </div>
+        <br>
+        <label><b>Apply for :</b></label>
+        <select ng-model="purpose" id="purpose" placeholder="Events">
+            <option value="Events">Events</option>
+        </select>
+
+        <div class="form-container">
+            <form name="applicationForm">
+                <label>Would you be interested in applying for {{purpose}}?</label><br>
+                <div class="radio-buttons">
+                    <input type="radio" id="yes" name="interest" ng-model="interest" value="yes" required>
+                    <label for="yes">Yes</label>
+                    <input type="radio" id="no" name="interest" ng-model="interest" value="no" required>
+                    <label for="no">No</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" name="name" ng-model="fname" placeholder="Your Name" required>
+                    <input type="text" name="purpose-name" ng-model="purposeName" placeholder="{{purpose}} Name" required>
+                    <input type="email" name="email" ng-model="email" placeholder="Your Email" required>
+                    <input type="tel" name="phone" ng-model="phone" placeholder="Your Phone No." ng-pattern="/^[0-9]{10}$/" required>
+                    <span ng-show="applicationForm.phone.$error.pattern" style="color:red;">Invalid phone number, it should contain 10 digits</span>
+                    <input type="text" name="address" ng-model="address" placeholder="Your Address" required>
+                </div><br>
+                <button ng-click="submitForm()" type="button"><b>{{editMode ? 'Update' : 'Apply'}}</b></button><br>
+                <button ng-click="resetForm()" type="button" ng-if="editMode"><b>Cancel</b></button>
+            </form>
+        </div>
+
+        <div ng-show="submitted">
+            <h2>Hi {{fname}}. Thanks for Applying for {{purposeName}}</h2>
+        </div>
+
+        <div>
+            <h2>Applications</h2>
+            <ul>
+                <li ng-repeat="application in applications">
+                    <p><b>{{ application.fname }} applied for {{ application.purpose }} - {{ application.purposeName }} ({{ application.email }})</b>
+                    <br><br>
+                    <input type="checkbox" ng-model="applications[$index].isChecked">
+                    <label for="checkbox">Enable Remove Button</p></label><br><br>
+                    <button ng-click="editDetails($index)" ng-disabled="!applications[$index].isChecked"><b>Edit</b></button>
+                    <button ng-click="removeDetails($index)" ng-disabled="!applications[$index].isChecked"><b>Remove</b></button><br><br>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

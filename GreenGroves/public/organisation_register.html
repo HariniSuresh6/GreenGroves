@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organization Registration</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <style>
+        /* Background styling */
+        body {
+            background-image: url('https://images.pexels.com/photos/409696/pexels-photo-409696.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            color: #333;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container for form */
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            margin: 50px auto;
+            max-width: 500px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Form heading */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Form fields styling */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="email"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        textarea {
+            height: 100px;
+        }
+
+        /* Button styling */
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            text-align: center;
+            color: green;
+        }
+
+        .home-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .home-button a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-image: url('https://t3.ftcdn.net/jpg/06/08/24/70/360_F_608247083_ecnCoMu0F9IPh4KL3EZAKx1lu6ZsEOfO.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 5px;
+            text-indent: -9999px; /* Hide text inside the button */
+            cursor: pointer;
+            text-decoration: none;
+        }
+    </style>
+    <!--script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="firebase-config.js"></script-->
+</head>
+<body ng-app="myApp" ng-controller="RegistrationController">
+
+    <div class="home-button">
+        <a href="reghome.html" aria-label="Home"></a>
+    </div>
+    
+    <div class="container">
+        <h1>Register Your Organization</h1>
+        <form ng-submit="submitForm()" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="orgName">Organization Name (your username):</label>
+                <input type="text" id="orgName" ng-model="organization.name" required>
+            </div>
+            <div class="form-group">
+                <label for="logo">Upload Logo:</label>
+                <input type="file" id="logo" file-model="organization.logo" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" ng-model="organization.description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Started Date:</label>
+                <input type="date" id="startDate" ng-model="organization.startDate" required>
+            </div>
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" id="location" ng-model="organization.location" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" ng-model="organization.email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label> <!-- New Password Input -->
+                <input type="password" id="password" ng-model="organization.password" required>
+            </div>
+            <button type="submit">Register</button>
+            <p ng-if="status">{{ status }}</p>
+        </form>
+    </div>
+
+    <script>
+        var app = angular.module('myApp', []);
+
+        // Directive to bind file input to ng-model
+        app.directive('fileModel', ['$parse', function ($parse) {
+            return {
+                restrict: 'A',
+                link: function(scope, element, attrs) {
+                    var model = $parse(attrs.fileModel);
+                    var modelSetter = model.assign;
+
+                    element.bind('change', function(){
+                        scope.$apply(function(){
+                            modelSetter(scope, element[0].files[0]);
+                        });
+                    });
+                }
+            };
+        }]);
+
+        app.controller('RegistrationController', function($scope, $http, $window) {
+            $scope.organization = {};
+
+            $scope.submitForm = function() {
+                var formData = new FormData();
+                formData.append('orgName', $scope.organization.name);
+                formData.append('logo', $scope.organization.logo);
+                formData.append('description', $scope.organization.description);
+                formData.append('startDate', $scope.organization.startDate);
+                formData.append('location', $scope.organization.location); 
+                formData.append('email', $scope.organization.email);
+                formData.append('password', $scope.organization.password); // Include password
+
+                $http.post('/api/organisations', formData, {
+                    transformRequest: angular.identity,
+                    headers: { 'Content-Type': undefined }
+                }).then(function(response) {
+                    $scope.status = 'Registration successful for ' + $scope.organization.name;
+                    // Redirect to the home page
+                    $window.location.href = 'home1.html'; 
+                }, function(error) {
+                    $scope.status = 'Registration failed: ' + error.data.message;
+                });
+            };
+        });
+    </script>
+</body>
+</html>

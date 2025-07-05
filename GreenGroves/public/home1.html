@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="greenGrovesApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Groves</title>
+    <link rel="stylesheet" href="home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.min.js"></script>
+   
+</head>
+<body ng-controller="mainController">
+    
+    <header>
+        <nav>
+            <ul>
+                <li><a href="EventPageAngular1.html">Events</a></li>
+                <li><a href="Volunteering1.html">Volunteering</a></li>
+                <!-- <li><a href="organisation page1.html">Organisations</a></li> -->
+                <li><a href="internpage1.html">Internships</a></li>
+                <li><a href="aboutpage1.html">About Us</a></li>
+		    
+            </ul>
+        </nav>
+        <div class="logout-button">
+            <a href="#" aria-label="Logout" ng-click="logout()"></a>
+        </div>
+    </header>
+    <main>
+        <section class="hero">
+            <h1>Green Groves</h1>
+            <h1 >Empower Your Future,<br>Sustain Our World</h1>
+            <p>Discover Volunteer Opportunities and Internships and Much More</p>
+            <custom-welcome-message></custom-welcome-message>
+            <!-- Register Now Button -->
+            <button class="register-btn" onclick="window.location.href='profile.html'">Click here to Upload your profile</button>
+        </section>
+    </main>
+    <footer>
+        <div class="contact-icons">
+            <a href="tel:+91 6369631469">Phone</a>
+             <a href="https://mail.google.com/mail/?view=cm&fs=1&to=anaga@student.tce.edu&su=Support%20Request&body=Please%20provide%20details." target="_blank">
+  Email
+</a>
+            <!--a href="https://iasf2025.onrender.com/">Website</a>
+            <a href="https://iasf2025.onrender.com/">Chat</a-->
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=anaga@student.tce.edu&su=Support%20Request&body=Please%20provide%20details." target="_blank">
+  Support
+</a>
+	    <a href="https://maps.app.goo.gl/tjYw6thU3PgV9AN6A" target="_blank">Location</a>
+        </div>
+    </footer>
+    <script>
+        angular.module('greenGrovesApp', [])
+        .controller('mainController', function($scope) {
+            $scope.logout = function() {
+                // Clear the localStorage variables
+                localStorage.setItem('organizationName', null);
+                localStorage.setItem('userName', null);
+                
+                // Redirect to the homepage (or any other page)
+                window.location.href = 'reghome.html';
+            };
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('https://static.vecteezy.com/system/resources/previews/036/515/901/non_2x/ai-generated-peachy-tree-limbs-on-the-2024-color-of-the-year-peach-fuzz-backdrop-free-photo.jpg');    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    column-count:3;column-gap:10px;
+    justify-content: space-between;
+    min-height: 100vh;
+}
+
+header {
+    background: rgba(249, 131, 99, 0.892); /* Peachy pink background */
+    color: #333;
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: #2b58ef 3px solid;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+}
+
+header h1 {
+    text-transform: uppercase;
+    margin: 0;
+    font-size: 40px;
+    color: black;
+}
+
+
+h2 {
+    
+    margin: 0;
+    font-size: 20px;
+    color: rgb(33, 17, 156);
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+    padding: 5px 10px;
+}
+
+nav ul li a:hover {
+    background-color: #4738ed;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.search-bar input[type="text"] {
+    width: 500px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+}
+
+.search-bar button {
+    padding: 10px;
+    border: none;
+    background-color: #e86e3a;
+    color: white;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.search-bar button i {
+    font-size: 16px;
+}
+
+.home-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.home-button button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background-image: url('https://t3.ftcdn.net/jpg/06/08/24/70/360_F_608247083_ecnCoMu0F9IPh4KL3EZAKx1lu6ZsEOfO.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+ .event-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 100px; /* Adjust the gap between cards */
+    }
+
+.event-card {
+        border: 1px solid #ccc;
+        background: rgba(249, 131, 99, 0.892); /* Peachy pink background */
+        border-radius: 8px;
+        padding: 16px;
+        margin: 10px;
+        width: 200px;
+        text-align: center;
+        height: auto;
+        overflow: hidden;
+}
+
+.event-card p {
+        max-height: 60px; /* Set a maximum height for the description */
+        overflow: hidden; /* Hide the overflowed text */
+        text-overflow: ellipsis; /* Show ellipsis if the text is too long */
+        display: -webkit-box; /* For WebKit browsers */
+        -webkit-box-orient: vertical; /* Set box orientation */
+         /* Limit to 3 lines */
+        margin: 10px 0; /* Margin for the description */
+}
+
+.event-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.event-card img {
+    width: 70%;
+    border-radius: 10px 10px 0 0;
+}
+
+.event-card h2 {
+    margin: 20px 0;
+    font-size: 24px;
+}
+
+.event-card button {
+    padding: 10px 20px;
+    background: #4c23f2;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.event-card button:hover {
+    background: #333;
+}
+
+footer {
+    background: rgba(249, 131, 99, 0.892);
+    padding: 20px;
+    text-align: center;
+}
+
+/* Ensure the div automatically adjusts its size based on content */
+.event-list .event-card div {
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Optional: To make the transition smoother when expanding or collapsing */
+.event-list .event-card ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.event-list .event-card div h2 {
+    margin: 10px 0;
+}
+
+.event-list .event-card div p, .event-list .event-card div li {
+    padding: 5px 0;
+}
+
+/* Additional styling to ensure proper padding and spacing */
+.event-card div {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: rgba(248, 230, 207, 0.659); /* Keep this background for visibility */
+    border-radius: 5px;
+}

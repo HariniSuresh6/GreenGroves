@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="greenGrovesApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Groves</title>
+    <link rel="stylesheet" href="home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.min.js"></script>
+</head>
+<body ng-controller="mainController">
+    
+    <header>
+        <nav>
+            <ul>
+		        <li><a href="organisation_register.html">OrganisationRegister</a></li>
+                <li><a href="Volunteering_Register.html">VolunteeringRegister</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="hero">
+            <h1>Green Groves</h1>
+            <h1 >Empower Your Future,<br>Sustain Our World</h1>
+            <p >Discover Volunteer Opportunities and Internships and Much More</p>
+            <custom-welcome-message></custom-welcome-message>
+            <!-- Register Now Button -->
+            <button class="register-btn" onclick="window.location.href='registrationpage.html'">Register now to Know more</button>
+            <button class="register-btn" onclick="window.location.href='login.html'">Already Registered Login Here</button>
+        </section>
+    </main>
+
+    <!-- Chatbot Button and Modal -->
+    <div class="chatbot-container">
+        <!-- Chat with Us Button -->
+        <button class="chatbot-button" onclick="openChatbot()">Chat with Us</button>
+
+        <!-- Chatbot Modal for Chat with Us -->
+        <div id="chatbotModal" class="chatbot-modal">
+            <div class="chatbot-modal-content">
+                <span class="close" onclick="closeChatbot()">&times;</span>
+                <div class="chatbot-header">
+                    <h3><b>Help</b></h3>
+                </div>
+                <div class="chatbot-body" id="chatBody">
+                    <!-- Messages will appear here -->
+                </div>
+                <div class="chat-footer">
+                    <input type="text" id="userInput" placeholder="Type a message..." required>
+                    <button type="submit" id="sendBtn">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chatbot Modal for Career Guidance -->
+        <div id="careerChatModal" class="chatbot-modal">
+            <div class="chatbot-modal-content">
+                <span class="close" onclick="closeCareerChat()">&times;</span>
+                <div class="chatbot-header">
+                    <h3><b>Career Guidance</b></h3>
+                </div>
+                <div class="chatbot-body" id="careerChatBody">
+                    <!-- Messages will appear here -->
+                </div>
+                <div class="chat-footer">
+                    <input type="text" id="careerUserInput" placeholder="Type a message..." required>
+                    <button type="submit" id="careerSendBtn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="contact-icons">
+            <a href="tel:+91 6369631469">Phone</a>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=anaga@student.tce.edu&su=Support%20Request&body=Please%20provide%20details." target="_blank">Email</a>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=anaga@student.tce.edu&su=Support%20Request&body=Please%20provide%20details." target="_blank">Support</a>
+	        <a href="https://maps.app.goo.gl/tjYw6thU3PgV9AN6A" target="_blank">Location</a>
+        </div>
+    </footer>
+
+    <script>
+        // Chatbot for General Help
+        function openChatbot() {
+            document.getElementById('chatbotModal').style.display = 'block';
+        }
+
+        function closeChatbot() {
+            document.getElementById('chatbotModal').style.display = 'none';
+        }
+
+        document.getElementById("sendBtn").addEventListener("click", sendMessage);
+        document.getElementById("userInput").addEventListener("keypress", function (e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        async function sendMessage() {
+            const userInput = document.getElementById("userInput").value;
+            if (!userInput) return;
+
+            displayMessage(userInput, 'user', 'chatBody');
+
+            try {
+                const response = await fetch("https://iasf2025.onrender.com/api/query", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ question: userInput })
+                });
+
+                if (!response.ok) throw new Error("Error fetching response");
+
+                const data = await response.json();
+                displayResponseAsList(data.answer, 'bot', 'chatBody');
+            } catch (error) {
+                displayMessage("Error: " + error.message, 'bot', 'chatBody');
+            }
+
+            document.getElementById("userInput").value = "";
+        }
+
+        function displayMessage(message, sender, chatBodyId) {
+            const messageContainer = document.createElement("div");
+            messageContainer.classList.add("chat-message", sender === 'user' ? 'user-message' : 'bot-message');
+
+            const messageBubble = document.createElement("div");
+            messageBubble.classList.add("message");
+            messageBubble.textContent = message;
+
+            messageContainer.appendChild(messageBubble);
+            document.getElementById(chatBodyId).appendChild(messageContainer);
+
+            document.getElementById(chatBodyId).scrollTop = document.getElementById(chatBodyId).scrollHeight;
+        }
+
+        function displayResponseAsList(message, sender, chatBodyId) {
+            const messageContainer = document.createElement("div");
+            messageContainer.classList.add("chat-message", sender === 'user' ? 'user-message' : 'bot-message');
+
+            const messageBubble = document.createElement("div");
+            messageBubble.classList.add("message");
+            messageBubble.style.textAlign = "justify";
+
+            const lines = message.split('\n');
+            lines.forEach(line => {
+                const lineElement = document.createElement("p");
+                lineElement.textContent = line.trim();
+                messageBubble.appendChild(lineElement);
+            });
+
+            messageContainer.appendChild(messageBubble);
+            document.getElementById(chatBodyId).appendChild(messageContainer);
+
+            document.getElementById(chatBodyId).scrollTop = document.getElementById(chatBodyId).scrollHeight;
+        }
+
+        // Career Guidance Chatbot
+        function openCareerChat() {
+            document.getElementById('careerChatModal').style.display = 'block';
+        }
+
+        function closeCareerChat() {
+            document.getElementById('careerChatModal').style.display = 'none';
+        }
+
+        document.getElementById("careerSendBtn").addEventListener("click", sendCareerMessage);
+        document.getElementById("careerUserInput").addEventListener("keypress", function (e) {
+            if (e.key === 'Enter') sendCareerMessage();
+        });
+
+        async function sendCareerMessage() {
+            const userInput = document.getElementById("careerUserInput").value;
+            if (!userInput) return;
+
+            displayMessage(userInput, 'user', 'careerChatBody');
+
+            try {
+                const response = await fetch("https://iasf2025.onrender.com/api/career-query", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ question: userInput })
+                });
+
+                if (!response.ok) throw new Error("Error fetching response");
+
+                const data = await response.json();
+                displayResponseAsList(data.answer, 'bot', 'careerChatBody');
+            } catch (error) {
+                displayMessage("Error: " + error.message, 'bot', 'careerChatBody');
+            }
+
+            document.getElementById("careerUserInput").value = "";
+        }
+    </script>
+</body>
+</html>

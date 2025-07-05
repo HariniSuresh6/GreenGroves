@@ -1,0 +1,198 @@
+/* General styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    background-size: cover; /* Ensures the background image covers the entire area */
+    background-position: center;
+    background-image: url('https://c1.wallpaperflare.com/preview/342/960/848/beautiful-bloom-blooming-blossom.jpg');
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+    color: #333;
+    line-height: 1.6;
+    scroll-behavior: smooth;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header styles */
+header {
+    text-align: center;
+    padding: 30px 0;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    border-radius: 15px 15px 0 0;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.8rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Home button */
+.home-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.home-button button {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-image: url('https://t3.ftcdn.net/jpg/06/08/24/70/360_F_608247083_ecnCoMu0F9IPh4KL3EZAKx1lu6ZsEOfO.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.home-button button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Profile picture */
+.profile-pic-container {
+    position: relative;
+    text-align: center;
+    margin: 30px 0;
+}
+
+.profile-pic {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 5px solid #00f2fe;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.upload-profile-pic {
+    position: absolute;
+    bottom: 15px;
+    right: calc(50% - 70px);
+    background: #4facfe;
+    color: #fff;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.upload-profile-pic i {
+    font-size: 1.5rem;
+}
+
+.upload-profile-pic:hover {
+    background: #00c3ff;
+    transform: scale(1.1);
+}
+
+/* Main content */
+main {
+    padding: 20px 0;
+}
+
+.profile-details h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    color: #4facfe;
+    font-weight: bold;
+}
+
+.profile-details p {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+/* Cards for events, internships, and volunteering */
+.applied-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fefefe;
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+    padding: 10px;
+    margin: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+}
+
+.applied-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.applied-card h4 {
+    font-size: 1.5rem;
+    color: #4facfe;
+    margin-bottom: 10px;
+}
+
+.applied-card p {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.applied-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    object-fit: cover;
+    border: 2px solid #e0e0e0;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 15px 0;
+    font-size: 1rem;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    color: #fff;
+    border-radius: 0 0 15px 15px;
+    margin-top: 30px;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effects for footer links */
+footer a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: #d0f7ff;
+}

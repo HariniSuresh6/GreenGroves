@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenGrove - About Us</title>
+    <style>
+       body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto', Arial, sans-serif;
+    color: #000080;
+    text-align: center;
+    background-repeat: no-repeat;
+    background-size: cover; /* Ensures the background image covers the entire area */
+    background-position: center;
+    background-image: url('https://static.vecteezy.com/system/resources/previews/007/360/343/non_2x/close-up-of-nature-view-green-leaf-on-blurred-greenery-background-under-sunlight-with-bokeh-and-copy-space-using-as-background-natural-plants-landscape-ecology-wallpaper-concept-free-photo.jpg');
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+}
+
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .about-us {
+            margin-top: 50px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .about-us h1 {
+            color: #298000;
+            font-size: 2.5em;
+        }
+        .about-us p {
+            color: #298000;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+        .about-us button {
+            margin-top: 20px;
+            background-color: #5e8000;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .image-container {
+            position: relative;
+            margin-top: 50px;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: green;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 1.5em;
+        }
+    </style>
+    <script>
+        function getStarted() {
+            window.location.href = "home1.html"; 
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            var dateContainer = document.getElementById("date-container");
+            var currentDate = new Date();
+            var options = { year: 'numeric', month: 'long', day: 'numeric' };
+            dateContainer.textContent = currentDate.toLocaleDateString(undefined, options);
+
+            setTimeout(function() {
+                var getStartedButton = document.getElementById("get-started-button");
+                if (getStartedButton) {
+                    getStartedButton.textContent = "Get Explored Now ➡️";
+                }
+            }, 5000); // 5000 milliseconds = 5 seconds
+        });
+    </script>
+</head>
+<body>
+    
+    <div class="container">
+        <article class="about-us">
+            <h1>About Us</h1>
+            <p>
+                Welcome to GreenGrove, the premier online platform dedicated to connecting passionate students with community organizations focused on sustainable
+                development. Our mission is to bridge the gap between eager young minds and impactful environmental projects, fostering a collaborative
+                ecosystem where knowledge, innovation, and action converge. At GreenGrove, we believe in empowering
+                the next generation of environmental stewards by providing access to valuable opportunities, resources and a supportive community. Join us in our journey
+                towards a greener, more sustainable
+                future.
+            </p>
+            <button id="get-started-button" onclick="getStarted()">Get Started ➡️</button>
+        </article>
+        <div class="image-container">
+            <img src="circle_of_figures.png" alt="Circle of figures">
+            <div class="logo">GreenGrove</div>
+        </div>
+    </div>
+
+
+    <!-- Adding the date container -->
+    <div id="date-container"></div>
+</body>
+</html>

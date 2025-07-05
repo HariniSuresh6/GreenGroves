@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page</title>
+    <style>
+        body {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+            background-image: url('https://wallpaperaccess.com/full/2580733.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: rgb(252, 249, 249);
+        }
+	   .home-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .home-button a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-image: url('https://t3.ftcdn.net/jpg/06/08/24/70/360_F_608247083_ecnCoMu0F9IPh4KL3EZAKx1lu6ZsEOfO.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 5px;
+            text-indent: -9999px; /* Hide text inside the button */
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .container {
+            background: rgba(116, 9, 116, 0.815);
+            padding: 50px;
+		  margin-top: 20px;
+            padding-left: 130px;
+            padding-right: 130px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .container:hover {
+            transform: scale(1.01);
+        }
+        .container input, .container select {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: box-shadow 0.3s;
+        }
+        .container input:focus, .container select:focus {
+            box-shadow: 0 0 5px rgba(0, 0, 255, 0.5);
+            outline: none;
+        }
+        .container button {
+            padding: 10px 20px;
+            background-color: white; /* Button background color */
+            border: 2px solid white; /* Button border color */
+            color: black; /* Text color */
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .container button:hover {
+            background-color: rgba(255, 255, 255, 0.8); /* Light hover effect */
+            color: black;
+        }
+        .error {
+            color: #ffffff;
+            font-size: 0.9em;
+        }
+    </style>
+    <!--script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="firebase-config.js"></script-->
+</head>
+<body>
+    <div class="home-button">
+        <a href="reghome.html" aria-label="Home"></a>
+    </div>
+    <div class="container" ng-app="myApp" ng-controller="myCtrl">
+        <h1>Registration Page</h1><br>
+        <form name="registrationForm" ng-submit="submitForm()" novalidate>
+            <input type="text" ng-model="name" id="name" name="name" placeholder="Name" required>
+            <div class="error" ng-show="registrationForm.name.$error.required">Name is required!</div>
+
+            <select id="role" ng-model="role" name="role" required>
+                <option value="">Select your role from the list</option>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="admin">Administrator</option>
+            </select>
+            <div class="error" ng-show="registrationForm.role.$error.required">Role is required.</div>
+
+            <input type="text" ng-model="orgname" id="organization" name="organization" placeholder="Enter Your Organization Name" required>
+            <div class="error" ng-show="registrationForm.organization.$error.required">Organization name is required.</div>
+
+            <input type="email" ng-model="emaill" id="email" name="email1" placeholder="Your Email" required>
+            <div class="error" ng-show="registrationForm.email1.$error.required">Email is required.</div>
+            <div class="error" ng-show="registrationForm.email1.$error.email">Invalid email address.</div>
+
+            <input type="password" ng-model="password" id="password" name="password" placeholder="Fill with characters, numbers, symbols" required ng-minlength="6">
+            <div class="error" ng-show="registrationForm.password.$error.required">Password is required.</div>
+            <div class="error" ng-show="registrationForm.password.$error.minlength">Password must be at least 6 characters long.</div>
+
+            <input type="password" ng-model="confirmPassword" id="confirmPassword" name="confirmPassword" placeholder="Enter your password again" required>
+            <div class="error" ng-show="registrationForm.confirmPassword.$error.required">Confirm password is required.</div>
+            <div class="error" ng-show="confirmPassword !== password">Passwords do not match.</div>
+
+            <label><input type="checkbox" ng-model="checked">I, hereby confirm all the details are correct</label>
+            <br>
+            <button type="submit" ng-disabled="!registrationForm.$valid || !checked">REGISTER</button>
+            <button type="button" ng-click="updateRegistration()" ng-disabled="!selectedUser">UPDATE</button>
+		  <button type="button" onclick="window.location.href='login.html'">Login</button>
+            
+        </form>
+
+        <h2>Registered Users</h2>
+        <ul>
+            <li ng-repeat="registration in registrations">
+                {{ registration.name }} - {{ registration.role }} - {{ registration.orgname }}
+                <!--button ng-click="removeRegistration(registration._id)">Remove</button>
+                <button ng-click="editRegistration(registration)">Edit</button-->
+			 
+            </li>
+        </ul>
+    </div>
+
+    <script src="appp.js"></script>
+</body>
+</html>

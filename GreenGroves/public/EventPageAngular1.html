@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Events</title>
+    <link rel="stylesheet" href="eventpage.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+<body>
+    <div class="container" ng-app="myApp" ng-controller="myCtrl">
+        <header>
+            <h1>Events</h1>
+            <nav>
+                <ul><b>
+                    <!-- <li><a href="organisation page1.html">Organisations</a></li> -->
+                    <li><a href="internpage1.html">Internships</a></li>
+                    <li><a href="Volunteering1.html">Volunteering</a></li></b>
+                </ul>
+            </nav>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search for Events" ng-model="searchText">
+                <button id="search-button"><i class="fa fa-search"></i></button>
+            </div>
+            <div class="home-button">
+                <button id="home-button" ng-click="navigateTo('home1.html')"></button>
+            </div>
+        </header>
+        <main>
+            <section class="event-list">
+                <article class="event-card" ng-repeat="event in filteredEvents = (events | orderBy:'dateISO' | filter: searchText)">
+                    <img ng-src="{{ event.logo || 'default-logo.png' }}" alt="{{ event.title }}">
+                    <h2>{{ event.title }}</h2>
+                    <p><b>Event Date: {{ event.date | date: 'yyyy-MM-dd' }}</b></p>
+                    <p>{{ event.description }}</p>
+                    
+                    <!-- View/Hide Applications button -->
+                    <button ng-click="toggleApplications(event)">View/Hide Applications</button>
+                    
+                    <!-- Applications section (only visible when showApplications[event.title] is true) -->
+                    <div ng-show="showApplications[event.title]" style="background-color: rgba(248, 230, 207, 0.659); padding: 5px; margin: 5px;">
+                        <h2>Applications for {{ event.title }}</h2>
+                        <ul>
+                            <li ng-repeat="application in event.applications">
+                                <p><b>{{ application.fname }} ({{ application.email }})</b></p>
+                            </li>
+                        </ul>
+                        <p ng-if="event.applications.length === 0">No applications found for this event.</p>
+                    </div>
+                </article>
+                
+                <p ng-if="filteredEvents.length === 0">No events found.</p>
+            </section>
+        </main>
+        <footer>
+            <p><b>&copy; 2025 Events Inc.</b></p>
+            <p><b>{{ today | date }}</b></p>
+        </footer>
+    </div>
+    <script>
+        var app = angular.module('myApp', []);
+
+app.controller('myCtrl', function($scope, $http) {
+    $scope.today = new Date();
+    $scope.showApplications = {};  // Track which event has applications shown
+
+    // Get the logged-in organisation's name from localStorage
+    const loggedInOrgName = localStorage.getItem('organizationName');
+
+    // Ensure that organization name is present
+    if (!loggedInOrgName) {
+        alert('No organisation logged in. Please log in again.');
+        window.location.href = 'login.html';  // Redirect to login if no org name found
+        return;
+    }
+
+    // Retrieve events data from the database
+    $http.get('/api/events')
+        .then(function(response) {
+            // Filter events based on the logged-in organisation's name
+            $scope.events = response.data.filter(function(event) {
+                return event.organizationName === loggedInOrgName;
+            }).map(function(event) {
+                return {
+                    title: event.title,
+                    date: new Date(event.date),
+                    logo: event.logo,
+                    description: event.description,
+                    organizationName: event.organizationName,
+                    applications: []  // Applications will be added dynamically
+                };
+            });
+        })
+        .catch(function(error) {
+            console.error('Error fetching events:', error);
+            alert('Error fetching events: ' + (error.data ? error.data.message : error.message));
+        });
+
+    // Function to toggle applications visibility for an event
+    $scope.toggleApplications = function(event) {
+        if (!$scope.showApplications[event.title]) {
+            // Fetch applications if not already fetched for the event
+            $http.get('/api/applications')
+                .then(function(response) {
+                    // Filter applications based on the event title (purposeName matches event.title)
+                    event.applications = response.data.filter(function(application) {
+                        return application.purposeName === event.title;
+                    });
+                })
+                .catch(function(error) {
+                    console.error('Error fetching applications:', error);
+                    alert('Error fetching applications: ' + (error.data ? error.data.message : error.message));
+                });
+        }
+        // Toggle the visibility of applications for the event
+        $scope.showApplications[event.title] = !$scope.showApplications[event.title];
+        };
+
+        // Function to handle navigation
+        $scope.navigateTo = function(url) {
+            location.href = url;
+        };
+    });
+
+    </script>
+    
+    
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script>
+        var appElement = angular.element(document.querySelector('[ng-app=myApp]'));
+        var scope = appElement.scope();
+
+        function searchEvents() {
+            scope.$apply(function() {
+                scope.searchText = document.getElementById('search-input').value.toLowerCase();
+            });
+        }
+
+        var searchButton = document.getElementById('search-button');
+        var homeButton = document.getElementById('home-button');
+
+        searchButton.addEventListener('click', searchEvents);
+        document.getElementById('search-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                searchEvents();
+            }
+        });
+
+        homeButton.addEventListener('click', function() {
+            scope.navigateTo('home.html');
+        });
+    </script>
+</body>
+</html>

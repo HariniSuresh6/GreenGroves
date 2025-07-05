@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="loginApp">
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+<link rel="stylesheet" href="login.css">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<!--script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="firebase-config.js"></script-->
+</head>
+<body ng-controller="sessionController">
+<div class="container">
+    <div class="image-section">
+        <img src="https://t3.ftcdn.net/jpg/04/34/57/98/360_F_434579867_ClsXV5zTMwLyNn88VpJPUY7HS7hav1Jy.jpg" alt="Earth Hugging Plant">
+    </div>
+    <div class="login-section">
+        <h1>Login</h1>
+        <form id="loginForm" ng-submit="submitForm()">
+            <label for="username">Name</label>
+            <input type="text" id="username" name="username" ng-model="username" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" ng-model="password" required>
+
+            <label for="role">Role</label>
+            <select id="role" name="role" ng-model="role" required>
+                <option value="">Select a role</option>
+                <option value="Organisation">Organisation</option>
+                <option value="User">User</option>
+            </select>
+            <br>
+            <a href="#" class="forgot-password">Forgot Password?</a>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    var app = angular.module('loginApp', []);
+    // Session Controller
+    app.controller('sessionController', function($scope, $http) {
+        $scope.submitForm = function() {
+            var data = {
+                username: $scope.username,
+                password: $scope.password,
+                role: $scope.role
+            };
+
+            // Make POST request to login API
+            $http.post('https://iasf2025.onrender.com/api/login', data)
+            .then(function(response) {
+                if (response.data.message === 'Login successful') {
+                    // Store the organisation's name in localStorage
+                    if ($scope.role === 'Organisation') {
+                        localStorage.setItem('organizationName', response.data.name);
+                        window.location.href = 'home1.html';  // Organisation home page
+                    } else if ($scope.role === 'User') {
+                        localStorage.setItem('userName', response.data.name);
+                        window.location.href = 'aboutpage.html';  // User home page
+                    }
+                } else {
+                    alert(response.data.message);
+                }
+            })
+            .catch(function(error) {
+                alert('Login failed: ' + error.data.message);
+            });
+
+        };
+    });
+    // User Session Factory
+    app.factory('SessionService', function($timeout) {
+        var sessionService = {};
+        var timeoutPromise;
+
+        sessionService.create = function(sessionId, userId, userRole, timeoutDuration) {
+            this.id = sessionId;
+            this.userId = userId;
+            this.userRole = userRole;
+
+            // Set a timeout to destroy the session after the specified duration
+            if (timeoutPromise) {
+                $timeout.cancel(timeoutPromise);
+            }
+            timeoutPromise = $timeout(function() {
+                sessionService.destroy();
+                alert('Session expired. Please log in again.');
+                // Redirect to login page or handle session expiry
+                window.location.href = 'login.html';
+            }, timeoutDuration);
+        };
+
+        sessionService.destroy = function() {
+            this.id = null;
+            this.userId = null;
+            this.userRole = null;
+            if (timeoutPromise) {
+                $timeout.cancel(timeoutPromise);
+            }
+        };
+
+        return sessionService;
+    });
+
+    
+</script>
+
+</body>
+</html>

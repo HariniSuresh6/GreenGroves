@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="InternshipsApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internships Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://media.istockphoto.com/id/1479805562/vector/green-nature-background-with-grass-and-flowers.jpg?s=170667a&w=0&k=20&c=wqN5ys-jtzLzCpyfRn6ZwR6NWUPjIMihFXpplLirev8=');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: flex;
+            padding-left: 300px;
+            padding-right: 300px;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+        h1 {
+            font-size: 3rem;
+            font-style: bold;
+            margin-bottom: 1rem;
+            color: black;
+        }
+        .container {
+            width: 80%;
+            text-align: center;
+        }
+        .internship {
+            background:  rgba(155, 245, 161, 0.688);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            color: black;
+            display: center;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+        .internship:hover {
+            transform: scale(1.05);
+        }
+        .internship button {
+            padding: 10px 20px;
+            background-color: white;
+            border: none;
+            color: #1a879b;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .internship button:hover {
+            background-color: #e3f6fb;
+        }
+.home-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .home-button a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-image: url('https://t3.ftcdn.net/jpg/06/08/24/70/360_F_608247083_ecnCoMu0F9IPh4KL3EZAKx1lu6ZsEOfO.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 5px;
+            text-indent: -9999px; /* Hide text inside the button */
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: right;
+            color: rgb(13, 3, 3);
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <!--script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="firebase-config.js"></script-->
+</head>
+<body ng-controller="InternshipsController">
+    <div class="home-button">
+        <a href="home.html" aria-label="Home"></a>
+    </div>
+    <div class="container" aria-label="Internship Opportunities">
+        <h1>INTERNSHIPS</h1>
+        <section>
+            <article class="internship" ng-repeat="internship in internships | orderBy:'startDate'">
+                <header><b>{{ internship.title }}</b></header><br>
+                <p><b>Organization: {{ internship.organizationName }}</b></p>
+                <label for="{{ internship.id }}-start">Start Date:</label>
+                <input type="date" id="{{ internship.id }}-start" ng-model="internship.startDate" disabled>
+                <label for="{{ internship.id }}-end">End Date:</label>
+                <input type="date" id="{{ internship.id }}-end" ng-model="internship.endDate" disabled>
+                <p ng-if="internship.salary">Paid Internship Salary: {{ internship.salary | currency :"₹"}}</p>
+                <button ng-click="apply(internship.title)">Click here to apply</button>
+            </article><br><br>
+            
+        </section>
+    </div>
+
+    <div class="footer">
+        <b><p>Date: {{ currentDate | date:'fullDate' }}</p></b>
+    </div>
+
+    <script>
+        var app = angular.module('InternshipsApp', []);
+
+        app.controller('InternshipsController', function($scope, $http) {
+    $scope.currentDate = new Date();
+
+    $scope.apply = function(event) {
+                console.log('Applying to Internship:', event.title);
+                location.href = 'applyIntern.html';
+            };
+
+    // Retrieve internships data from the database
+    $http.get('/api/internships').then(function(response) {
+        console.log(response.data); // Log the response data
+        $scope.internships = response.data.map(function(internship) {
+            return {
+                id: internship._id,
+                title: internship.title,
+                organizationName: internship.organizationName,
+                startDate: new Date(internship.startDate),
+                endDate: new Date(internship.endDate),
+                salary: internship.salary
+            };
+        });
+    });
+});
+
+    </script>
+</body>
+</html>

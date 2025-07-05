@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="profileApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organization Profile</title>
+    <link rel="stylesheet" href="profile.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <!--script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="firebase-config.js"></script-->
+</head>
+<body ng-controller="ProfileController">
+    <div class="home-button">
+        <a href="home1.html" aria-label="Home"></a>
+    </div>
+<div class="container">
+    <h1>Organization Profile</h1>
+    
+    <!-- Organization Name Input -->
+    <div class="form-section">
+        <label for="organizationName">Organization Name</label>
+        <input type="text" ng-model="organizationName" required placeholder="Enter organization name">
+    </div>
+
+    <div class="form-section">
+        <h2>Upload Event</h2>
+        <form ng-submit="uploadEvent()">
+            <label for="eventTitle">Title</label>
+            <input type="text" ng-model="event.title" required>
+
+            <label for="eventDate">Date</label>
+            <input type="date" ng-model="event.date" required>
+
+            <label for="eventDescription">Description</label>
+            <textarea ng-model="event.description" required></textarea>
+
+            <label for="logo">Upload Logo:</label>
+            <input type="file" id="logo" file-model="event.logo" required>
+
+            <button type="submit">Add Event</button>
+        </form>
+    </div>
+
+    <div class="form-section">
+
+        <h2>Upload Internship</h2>
+    <form ng-submit="uploadInternship()">
+        <label for="internshipTitle">Title</label>
+        <input type="text" ng-model="internship.title" required>
+
+        <label for="internshipStartDate">Start Date</label>
+        <input type="date" ng-model="internship.startDate" required>
+
+        <label for="internshipEndDate">End Date</label>
+        <input type="date" ng-model="internship.endDate" required>
+
+        <label for="internshipSalary">Salary</label>
+        <input type="number" ng-model="internship.salary" required>
+
+        <button type="submit">Add Internship</button>
+    </form>
+    </div>
+
+</div>
+
+<script>
+    var app = angular.module('profileApp', []);
+
+    // Directive to bind file input to ng-model
+    app.directive('fileModel', ['$parse', function ($parse) {
+            return {
+                restrict: 'A',
+                link: function(scope, element, attrs) {
+                    var model = $parse(attrs.fileModel);
+                    var modelSetter = model.assign;
+
+                    element.bind('change', function(){
+                        scope.$apply(function(){
+                            modelSetter(scope, element[0].files[0]);
+                        });
+                    });
+                }
+            };
+        }]);
+
+    app.controller('ProfileController', function($scope, $http) {
+        // Fetch data based on the organization name provided by the user
+        $scope.fetchData = function() {
+            if ($scope.organizationName) {
+                $http.get(`/api/events/${$scope.organizationName}`).then(response => {
+                    $scope.events = response.data;
+                });
+
+                $http.get(`/api/internships/${$scope.organizationName}`).then(response => {
+                    $scope.internships = response.data;
+                });
+            }
+        };
+
+        // Watch the organization name and fetch data accordingly
+        $scope.$watch('organizationName', function(newValue, oldValue) {
+            if (newValue) {
+                $scope.fetchData();
+            }
+        });
+
+        // Upload new event
+        $scope.uploadEvent = function() {
+            alert('Event Uploaded Successfully');
+            const formData = new FormData();
+            formData.append('title', $scope.event.title);
+            formData.append('date', $scope.event.date);
+            formData.append('description', $scope.event.description);
+            formData.append('organizationName', $scope.organizationName);
+            formData.append('logo', $scope.event.logo);
+
+            $http.post('/api/events', formData, {
+                transformRequest: angular.identity,
+                headers: { 'Content-Type': undefined }
+            })
+            .then(response => {
+                $scope.events.push(response.data);
+                $scope.event = {}; // Reset the form
+                
+            })
+            .catch(error => {
+                alert('Error uploading event: ' + error.data.message);
+            });
+            $scope.resetFormE();
+        };
+
+        // Upload new event
+        $scope.uploadInternship = function() {
+            alert('Internship Uploaded Successfully');
+    const formD = new FormData();
+    
+    // Ensure all fields are properly appended
+    formD.append('title', $scope.internship.title);
+    formD.append('organizationName', $scope.organizationName);
+    formD.append('startDate', $scope.internship.startDate);
+    formD.append('endDate', $scope.internship.endDate);
+    formD.append('salary', $scope.internship.salary);
+
+    // Check if all required fields are available before submitting
+    if (!$scope.internship.title || !$scope.internship.startDate || !$scope.internship.endDate || !$scope.internship.salary || !$scope.organizationName) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+
+    // Send data via POST request
+    $http.post('/api/internships', formD, {
+        transformRequest: angular.identity,
+        headers: { 'Content-Type': undefined }
+    })
+    .then(response => {
+        // Add new internship to the list
+        $scope.internships.push(response.data);
+        $scope.internships = {}; // Reset the form
+        alert('Internship Uploaded Successfully');
+    })
+    .catch(error => {
+        alert('Error uploading internship: ' + error.data.message);
+    });
+    $scope.resetFormI();
+};
+
+$scope.resetFormE = function() {
+            $scope.event.title='';
+            $scope.event.date='';
+            $scope.event.description='';
+            $scope.organizationName='';
+            $scope.event.logo='';
+    };
+
+    $scope.resetFormI = function() {
+        $scope.internship.title='';
+        $scope.internship.startDate='';
+        $scope.internship.endDate='';
+        $scope.internship.salary='';
+    };
+
+
+        
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile</title>
+    <link rel="stylesheet" href="studentprofile.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container" ng-app="profileApp" ng-controller="ProfileController">
+        <header>
+            <h1>Student Profile</h1>
+            <div class="home-button">
+                <button id="home-button" ng-click="navigateTo('home.html')"></button>
+            </div>
+              
+
+        </header>
+        <main>
+            <section class="profile-details">
+                <h2>Welcome, {{ loggedInUserName }}</h2>
+                <p><b>Date: {{ today | date }}</p></b>
+            </section>
+            <section class="applied-list">
+                <h3>Your Applied Events</h3>
+                <article class="applied-card" ng-repeat="event in events">
+                    <img ng-src="{{ event.logo || 'default-logo.png' }}" alt="{{ event.title }}">
+                    <h4>{{ event.title }}</h4>
+                    <p><b>Event Date: {{ event.date | date: 'yyyy-MM-dd' }}</b></p><br>
+                    <br>
+                    <!--
+                    <button ng-click="toggleApplications(event)">View/Hide Applications</button>
+                    <div ng-show="showApplications[event.title]" style="background-color: rgba(248, 230, 207, 0.659); padding: 5px; margin: 5px;">
+                        <h4>Applications</h4>
+                        <ul>
+                            <li ng-repeat="application in event.applications">
+                                <p><b>{{ application.fname }} ({{ application.email }})</b></p>
+                            </li>
+                        </ul>
+                        <p ng-if="event.applications.length === 0">No applications found for this event.</p>
+                    </div>-->
+                </article>
+
+                <p ng-if="events.length === 0">No applications found for any events.</p>
+              </section>
+                <section class="applied-list">
+                  <h3>Your Applied Internships</h3>
+                  <article class="applied-card" ng-repeat="internship in internships">
+                    <h4><b>{{ internship.title }}</b></h4>
+                    <p><b>Organization: {{ internship.organizationName }}</b></p>
+                    <label for="{{ internship.id }}-start">Start Date:
+                    <input type="date" id="{{ internship.id }}-start" ng-model="internship.startDate" disabled></label>
+                    <label for="{{ internship.id }}-end">End Date:
+                    <input type="date" id="{{ internship.id }}-end" ng-model="internship.endDate" disabled></label>
+                    <p ng-if="internship.salary">Paid Internship Salary: {{ internship.salary | currency :"₹"}}</p>
+
+                    <br>
+                    <!--
+                      <button ng-click="toggleApplications(internship)">View/Hide Applications</button>
+                      <div ng-show="showApplications[internship.title]" style="background-color: rgba(248, 230, 207, 0.659); padding: 5px; margin: 5px;">
+                          <h4>Applications</h4>
+                          <ul>
+                              <li ng-repeat="application in internship.applications">
+                                  <p><b>{{ application.fname }} ({{ application.email }})</b></p>
+                              </li>
+                          </ul>
+                          <p ng-if="internship.applications.length === 0">No applications found for this internships.</p>
+                      </div>-->
+                  </article>
+  
+                  <p ng-if="internships.length === 0">No applications found for any Internships.</p>
+            </section>
+
+            <section class="applied-list">
+              <h3>Your Applied Volunteering Oppurtunities</h3>
+              <article class="applied-card" ng-repeat="service in services">
+                  <h4>{{ service.title }}</h4>
+                  <p><b>Volunteering Date: {{ service.date | date: 'yyyy-MM-dd' }}</b></p>
+                 <br>
+                <!--
+                  <button ng-click="toggleApplications(service)">View/Hide Applications</button>
+                  <div ng-show="showApplications[service.title]" style="background-color: rgba(248, 230, 207, 0.659); padding: 5px; margin: 5px;">
+                      <h4>Applications</h4>
+                      <ul>
+                          <li ng-repeat="application in service.applications">
+                              <p><b>{{ application.fname }} ({{ application.email }})</b></p>
+                          </li>
+                      </ul>
+                      <p ng-if="service.applications.length === 0">No applications found for this volunteerings.</p>
+                  </div>-->
+              </article>
+
+              <p ng-if="services.length === 0">No applications found for any volunteerings.</p>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2025 Student Portal</p>
+            <p>{{ today | date }}</p>
+        </footer>
+    </div>
+
+    <script>
+      var app = angular.module('profileApp', []);
+  
+      app.controller('ProfileController', function($scope, $http) {
+          $scope.today = new Date();
+          $scope.showApplications = {}; // Track which event has applications shown
+  
+          // Get the logged-in user's name from localStorage
+          const loggedInUserName = localStorage.getItem('userName');
+          $scope.loggedInUserName = loggedInUserName;
+  
+          // Ensure that the user name is present
+          if (!loggedInUserName) {
+              alert('No user logged in. Please log in again.');
+              window.location.href = 'login.html'; // Redirect to login if no user name found
+              return;
+          }
+  
+          
+  
+          // Retrieve events and filter based on user applications
+          $http.get('/api/events')
+              .then(function(response) {
+                  // Retrieve all events and applications
+                  $scope.events = response.data.map(function(event) {
+                      return {
+                          title: event.title,
+                          date: new Date(event.date),
+                          logo: event.logo,
+                          description: event.description,
+                          organizationName: event.organizationName,
+                          applications: [] // Applications will be added dynamically
+                      };
+                  });
+  
+                  // Fetch applications and filter them for the logged-in user
+                  $http.get('/api/applications')
+                      .then(function(response) {
+                          const allApplications = response.data;
+  
+                          // Filter events based on applications for the logged-in user
+                          $scope.events.forEach(function(event) {
+                              event.applications = allApplications.filter(function(application) {
+                                  return application.purposeName === event.title && application.fname === loggedInUserName;
+                              });
+                          });
+  
+                          // Keep only events with applications for the logged-in user
+                          $scope.events = $scope.events.filter(function(event) {
+                              return event.applications.length > 0;
+                          });
+                      })
+                      .catch(function(error) {
+                          console.error('Error fetching applications:', error);
+                          alert('Error fetching applications: ' + (error.data ? error.data.message : error.message));
+                      });
+              })
+              .catch(function(error) {
+                  console.error('Error fetching events:', error);
+                  alert('Error fetching events: ' + (error.data ? error.data.message : error.message));
+              });
+  
+          // Function to toggle applications visibility for an event
+          $scope.toggleApplications = function(event) {
+              $scope.showApplications[event.title] = !$scope.showApplications[event.title];
+          };
+  
+          // Retrieve events and filter based on user applications
+          $http.get('/api/internships')
+              .then(function(response) {
+                  // Retrieve all events and applications
+                  $scope.internships = response.data.map(function(internship) {
+                      return {
+                        id: internship._id,
+                    title: internship.title,
+                    organizationName: internship.organizationName,
+                    startDate: new Date(internship.startDate),
+                    endDate: new Date(internship.endDate),
+                    salary: internship.salary
+                          
+                      };
+                  });
+  
+                  // Fetch applications and filter them for the logged-in user
+                  $http.get('/api/applications')
+                      .then(function(response) {
+                          const allApplications = response.data;
+  
+                          // Filter events based on applications for the logged-in user
+                          $scope.internships.forEach(function(internship) {
+                            internship.applications = allApplications.filter(function(application) {
+                                  return application.purposeName === internship.title && application.fname === loggedInUserName;
+                              });
+                          });
+  
+                          // Keep only events with applications for the logged-in user
+                          $scope.internships = $scope.internships.filter(function(internship) {
+                              return internship.applications.length > 0;
+                          });
+                      })
+                      .catch(function(error) {
+                          console.error('Error fetching applications:', error);
+                          alert('Error fetching applications: ' + (error.data ? error.data.message : error.message));
+                      });
+              })
+              .catch(function(error) {
+                  console.error('Error fetching events:', error);
+                  alert('Error fetching events: ' + (error.data ? error.data.message : error.message));
+              });
+  
+          // Function to toggle applications visibility for an event
+          $scope.toggleApplications = function(internship) {
+              $scope.showApplications[internship.title] = !$scope.showApplications[internship.title];
+          };
+          
+          // Retrieve events and filter based on user applications
+          $http.get('/services')
+              .then(function(response) {
+                  // Retrieve all events and applications
+                  $scope.services = response.data.map(function(service) {
+                      return {
+                        title: service.title,
+                dateISO: new Date(service.date).toISOString(),
+                date: new Date(service.date),
+                description: service.description,
+                organizationName: service.organizationName,
+                applications: [] // Initialize applications as an empty array
+                      };
+                  });
+  
+                  // Fetch applications and filter them for the logged-in user
+                  $http.get('/api/applications')
+                      .then(function(response) {
+                          const allApplications = response.data;
+  
+                          // Filter events based on applications for the logged-in user
+                          $scope.services.forEach(function(service) {
+                            service.applications = allApplications.filter(function(application) {
+                                  return application.purposeName === service.title && application.fname === loggedInUserName;
+                              });
+                          });
+  
+                          // Keep only events with applications for the logged-in user
+                          $scope.services = $scope.services.filter(function(service) {
+                              return service.applications.length > 0;
+                          });
+                      })
+                      .catch(function(error) {
+                          console.error('Error fetching applications:', error);
+                          alert('Error fetching applications: ' + (error.data ? error.data.message : error.message));
+                      });
+              })
+              .catch(function(error) {
+                  console.error('Error fetching services:', error);
+                  alert('Error fetching services: ' + (error.data ? error.data.message : error.message));
+              });
+  
+          // Function to toggle applications visibility for an event
+          $scope.toggleApplications = function(service) {
+              $scope.showApplications[service.title] = !$scope.showApplications[service.title];
+          };
+  
+          // Function to handle navigation
+          $scope.navigateTo = function(url) {
+              location.href = url;
+          };
+  
+     
+
+
+
+      });
+  </script>
+  
+
+  
+</body>
+</html>

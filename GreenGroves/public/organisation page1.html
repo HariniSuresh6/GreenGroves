@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Organisations</title>
+    <link rel="stylesheet" href="orgpage.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
+</head>
+<body>
+    <div class="container" ng-app="myApp" ng-controller="myCtrl">
+        <header>
+            <h1>Organisations</h1>
+            <nav>
+                <ul><b>
+                    <li><a href="EventPageAngular1.html">Events</a></li>
+                    <li><a href="internpage1.html">Internships</a></li>
+                    <li><a href="Volunteering1.html">Volunteering</a></li></b>
+                </ul>
+            </nav>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search for Organisations" ng-model="searchText">
+                <button id="search-button"><i class="fa fa-search"></i></button>
+            </div>
+            <div class="home-button">
+                <button id="home-button" ng-click="navigateTo('home1.html')"></button>
+            </div>
+        </header>
+        <main>
+            <section class="event-list">
+                <article class="event-card" ng-repeat="organ in filteredOrgans = (organs | filter: searchText)" ng-class="{'expanded': organ.expanded}" ng-animate="'animate'">
+                    <img ng-src="{{ 'uploads/' + organ.logo }}" alt="{{ organ.name }}">
+                    <h2>{{ organ.name }}</h2>
+                    <p><b>Start Date: {{ organ.startDate | date:'longDate' }}</b></p>
+                    <p><b>Location: {{ organ.location }}</b></p>
+                    <button ng-click="apply(organ)">Read More</button>
+                    
+                    <!-- Expanded details section -->
+                    <div ng-if="organ.expanded" class="details">
+                        <p><b>Description:</b> {{ organ.description }}</p>
+                    </div>
+                </article>
+                <p ng-if="filteredOrgans.length === 0">No organizations found.</p>
+            </section>
+        </main>
+        <footer>
+            <p><b>&copy; Organisations Inc.</b></p>
+            <p><b>{{ today | date }}</b></p>
+        </footer>
+    </div>
+
+    <script>
+        var app = angular.module('myApp', ['ngAnimate']);
+
+        app.controller('myCtrl', function($scope, $http) {
+            $scope.today = new Date();
+
+            // Fetch organizations from backend API
+            $http.get('/api/organisations').then(function(response) {
+                $scope.organs = response.data; // Assuming the API returns an array of organization objects
+            }, function(error) {
+                console.error('Error fetching organizations:', error);
+            });
+
+            // Handle organization card click (Read More button)
+            $scope.apply = function(organ) {
+                organ.expanded = !organ.expanded; // Toggle expanded state
+            };
+
+            // Navigation function for buttons
+            $scope.navigateTo = function(url) {
+                window.location.href = url;
+            };
+        });
+    </script>
+</body>
+</html>

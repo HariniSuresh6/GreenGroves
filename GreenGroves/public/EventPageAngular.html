@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Events</title>
+    <link rel="stylesheet" href="eventpage.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <!--script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="firebase-config.js"></script-->
+</head>
+<body>
+    <div class="container" ng-app="myApp" ng-controller="myCtrl">
+        <header>
+            <h1>Events</h1>
+            <nav>
+                <ul><b>
+                    <li><a href="organisation page.html">Organisations</a></li>
+                    <li><a href="internpage.html">Internships</a></li>
+                    <li><a href="Volunteering.html">Volunteering</a></li></b>
+                </ul>
+            </nav>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search for Events" ng-model="searchText">
+                <button id="search-button"><i class="fa fa-search"></i></button>
+            </div>
+            <div class="home-button">
+                <button id="home-button" ng-click="navigateTo('home.html')"></button>
+            </div>
+        </header>
+        <main>
+            <section class="event-list">
+                <article class="event-card" ng-repeat="event in filteredEvents = (events | orderBy:'dateISO' | filter: searchText)">
+                    <img ng-src="{{ event.logo || 'default-logo.png' }}" alt="{{ event.title }}">
+                    <h2>{{ event.title }}</h2>
+                    <p><b>Event Date: {{ event.date | date: 'yyyy-MM-dd' }}</b></p>
+                    <p>{{ event.description }}</p>
+                    <button ng-click="apply(event)">Apply</button>
+                </article>
+                <p ng-if="filteredEvents.length === 0">No events found.</p>
+            </section>
+        </main>
+        <footer>
+            <p><b>&copy; 2025 Events Inc.</b></p>
+            <p><b>{{ today | date }}</b></p>
+        </footer>
+    </div>
+    <script>
+        var app = angular.module('myApp', []);
+
+        
+        app.controller('myCtrl', function($scope, $http) {
+            $scope.today = new Date();
+
+            // Retrieve events data from the database
+            $http.get('/api/events').then(function(response) {
+                $scope.events = response.data.map(function(event) {
+                    return {
+                        title: event.title,
+                        date: new Date(event.date),
+                        logo: event.logo,
+                        description: event.description,
+                        organizationName: event.organizationName
+                    };
+                });
+            });
+
+            // Function to handle applying for an event
+            $scope.apply = function(event) {
+                console.log('Applying to event:', event.title);
+                location.href = 'applyevent.html';
+            };
+
+            // Function to handle navigation
+            $scope.navigateTo = function(url) {
+                location.href = url;
+            };
+        });
+    </script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script>
+        var appElement = angular.element(document.querySelector('[ng-app=myApp]'));
+        var scope = appElement.scope();
+
+        function searchEvents() {
+            scope.$apply(function() {
+                scope.searchText = document.getElementById('search-input').value.toLowerCase();
+            });
+        }
+
+        var searchButton = document.getElementById('search-button');
+        var homeButton = document.getElementById('home-button');
+
+        searchButton.addEventListener('click', searchEvents);
+        document.getElementById('search-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                searchEvents();
+            }
+        });
+
+        homeButton.addEventListener('click', function() {
+            scope.navigateTo('home.html');
+        });
+    </script>
+</body>
+</html>
